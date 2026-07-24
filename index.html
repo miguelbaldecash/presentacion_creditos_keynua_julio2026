@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keynua — Análisis de Consumo de Transacciones</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface-2: #1a1a26;
+    --border: #2a2a3a;
+    --text: #e8e8f0;
+    --text-muted: #8888a0;
+    --accent: #6366f1;
+    --accent-light: #818cf8;
+    --green: #22c55e;
+    --green-muted: rgba(34,197,94,0.15);
+    --red: #ef4444;
+    --red-muted: rgba(239,68,68,0.12);
+    --amber: #f59e0b;
+    --amber-muted: rgba(245,158,11,0.12);
+    --blue: #3b82f6;
+    --blue-muted: rgba(59,130,246,0.12);
+    --purple: #a855f7;
+    --purple-muted: rgba(168,85,247,0.12);
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* Slide container */
+  .slides { scroll-snap-type: y mandatory; height: 100vh; overflow-y: scroll; }
+  .slide {
+    min-height: 100vh;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 80px;
+    position: relative;
+  }
+  .slide::after {
+    content: '';
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+  }
+
+  /* Navigation */
+  .nav {
+    position: fixed;
+    right: 32px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .nav a {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--border);
+    display: block;
+    transition: all 0.3s;
+  }
+  .nav a:hover, .nav a.active { background: var(--accent); transform: scale(1.4); }
+
+  /* Typography */
+  .slide-number {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-bottom: 12px;
+  }
+  h1 { font-size: 48px; font-weight: 800; line-height: 1.1; letter-spacing: -1.5px; }
+  h2 { font-size: 36px; font-weight: 700; line-height: 1.2; letter-spacing: -1px; margin-bottom: 40px; }
+  h3 { font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--text-muted); }
+  .subtitle { font-size: 20px; color: var(--text-muted); font-weight: 400; margin-top: 16px; line-height: 1.5; }
+
+  /* KPI Cards */
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin: 40px 0; }
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .kpi.green::before { background: var(--green); }
+  .kpi.red::before { background: var(--red); }
+  .kpi.blue::before { background: var(--blue); }
+  .kpi.amber::before { background: var(--amber); }
+  .kpi.purple::before { background: var(--purple); }
+  .kpi-label { font-size: 12px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+  .kpi-value { font-size: 40px; font-weight: 800; margin: 8px 0 4px; letter-spacing: -1px; }
+  .kpi-sub { font-size: 13px; color: var(--text-muted); }
+  .kpi.green .kpi-value { color: var(--green); }
+  .kpi.red .kpi-value { color: var(--red); }
+  .kpi.blue .kpi-value { color: var(--blue); }
+  .kpi.amber .kpi-value { color: var(--amber); }
+  .kpi.purple .kpi-value { color: var(--purple); }
+
+  /* Tables */
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    margin: 20px 0;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th {
+    background: var(--surface-2);
+    padding: 14px 16px;
+    text-align: right;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+  thead th:first-child { text-align: left; }
+  tbody td {
+    padding: 12px 16px;
+    text-align: right;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-variant-numeric: tabular-nums;
+  }
+  tbody td:first-child { text-align: left; font-weight: 500; }
+  tbody tr:hover { background: rgba(99,102,241,0.04); }
+  tbody tr:last-child td { border-bottom: none; }
+  .highlight-row { background: var(--red-muted) !important; }
+  .total-row { background: var(--surface-2); font-weight: 700; }
+  .total-row td { border-top: 2px solid var(--border); }
+
+  /* Bar chart */
+  .chart { display: flex; align-items: flex-end; gap: 8px; height: 260px; padding: 20px 0; }
+  .chart-bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
+  .chart-bars { display: flex; gap: 3px; align-items: flex-end; width: 100%; justify-content: center; }
+  .chart-bar {
+    width: 16px;
+    border-radius: 4px 4px 0 0;
+    transition: all 0.3s;
+    position: relative;
+    min-height: 2px;
+  }
+  .chart-bar:hover { opacity: 0.8; }
+  .chart-bar.created { background: var(--border); }
+  .chart-bar.signed { background: var(--accent); }
+  .chart-bar.adenda { background: var(--amber); }
+  .chart-bar.waste { background: var(--red); }
+  .chart-label { font-size: 10px; color: var(--text-muted); margin-top: 6px; font-weight: 500; }
+  .chart-val { font-size: 10px; color: var(--text-muted); font-weight: 600; }
+
+  /* Legend */
+  .legend { display: flex; gap: 24px; margin: 16px 0; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+  /* Donut chart */
+  .donut-wrap { display: flex; align-items: center; gap: 48px; }
+  .donut {
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .donut-center {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    text-align: center;
+    background: var(--bg);
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .donut-center .big { font-size: 28px; font-weight: 800; }
+  .donut-center .small { font-size: 11px; color: var(--text-muted); }
+  .donut-legend { display: flex; flex-direction: column; gap: 16px; }
+  .donut-legend-item { display: flex; align-items: center; gap: 12px; }
+  .donut-legend-dot { width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0; }
+  .donut-legend-label { font-size: 14px; }
+  .donut-legend-value { font-size: 14px; font-weight: 700; margin-left: auto; padding-left: 24px; }
+  .donut-legend-pct { font-size: 12px; color: var(--text-muted); margin-left: 8px; }
+
+  /* Trend indicator */
+  .trend { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 20px; }
+  .trend.up { background: var(--red-muted); color: var(--red); }
+  .trend.down { background: var(--green-muted); color: var(--green); }
+  .trend.neutral { background: var(--blue-muted); color: var(--blue); }
+
+  /* Pricing cards */
+  .pricing-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 24px 0; }
+  .pricing-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+  }
+  .pricing-card.recommended { border-color: var(--accent); background: rgba(99,102,241,0.08); }
+  .pricing-card .pack { font-size: 24px; font-weight: 700; }
+  .pricing-card .price { font-size: 18px; font-weight: 600; color: var(--accent-light); margin: 8px 0; }
+  .pricing-card .unit { font-size: 13px; color: var(--text-muted); }
+
+  /* Conclusion box */
+  .conclusion {
+    background: var(--surface);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 12px 12px 0;
+    padding: 24px 32px;
+    margin: 24px 0;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .conclusion strong { color: var(--accent-light); }
+
+  /* Grid layout */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+
+  /* Horizontal bar */
+  .hbar-wrap { margin: 8px 0; }
+  .hbar-label { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
+  .hbar-track { height: 8px; background: var(--surface-2); border-radius: 4px; overflow: hidden; }
+  .hbar-fill { height: 100%; border-radius: 4px; transition: width 0.5s; }
+
+  /* Footer */
+  .footer {
+    position: absolute;
+    bottom: 40px;
+    left: 80px;
+    right: 80px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* Scrollbar */
+  .slides::-webkit-scrollbar { width: 0; }
+
+  @media print {
+    .slide { page-break-after: always; min-height: auto; padding: 40px; }
+    .nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="#s1" title="Resumen"></a>
+  <a href="#s2" title="Funnel"></a>
+  <a href="#s3" title="Tendencia"></a>
+  <a href="#s4" title="Composición"></a>
+  <a href="#s5" title="Adendas"></a>
+  <a href="#s6" title="Ineficiencias"></a>
+  <a href="#s7" title="Pricing"></a>
+  <a href="#s8" title="Conclusiones"></a>
+</nav>
+
+<div class="slides">
+
+<!-- SLIDE 1: Cover -->
+<section class="slide" id="s1">
+  <div class="slide-number">Análisis L12M &mdash; Julio 2026</div>
+  <h1>Consumo de Transacciones<br>Keynua</h1>
+  <p class="subtitle">Agosto 2025 &mdash; Julio 2026 &bull; Datos extraídos de producción</p>
+
+  <div class="kpi-row" style="margin-top:48px">
+    <div class="kpi blue">
+      <div class="kpi-label">Transacciones consumidas</div>
+      <div class="kpi-value">10,235</div>
+      <div class="kpi-sub">Contratos firmados en Keynua</div>
+    </div>
+    <div class="kpi green">
+      <div class="kpi-label">Firmas efectivas</div>
+      <div class="kpi-value">9,271</div>
+      <div class="kpi-sub">Solicitudes con firma completa</div>
+    </div>
+    <div class="kpi amber">
+      <div class="kpi-label">Pagado L12M</div>
+      <div class="kpi-value">$15,806</div>
+      <div class="kpi-sub">Con IGV ($13,395 sin IGV) &bull; 15 compras</div>
+    </div>
+    <div class="kpi green">
+      <div class="kpi-label">Desperdicio</div>
+      <div class="kpi-value">$384</div>
+      <div class="kpi-sub">356 re-firmas duplicadas (3.5%)</div>
+    </div>
+  </div>
+
+  <div class="conclusion">
+    El sistema opera con <strong>96.5% de eficiencia</strong>. El desperdicio real es mínimo ($384/año). Las adendas (re-firma de contratos) son parte del flujo operativo y crecen proporcionalmente a la cartera activa.
+  </div>
+
+  <div class="footer">
+    <span>BaldeCash &bull; Análisis interno</span>
+    <span>Fuente: databalde-cashsys + API Keynua</span>
+  </div>
+</section>
+
+<!-- SLIDE 2: Funnel -->
+<section class="slide" id="s2">
+  <div class="slide-number">02 &mdash; Funnel de conversión</div>
+  <h2>Aprobaciones &rarr; Contratos &rarr; Firmas</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Mes</th>
+          <th>Aprobaciones</th>
+          <th>Contratos creados</th>
+          <th>Ratio crea/aprob</th>
+          <th>Firmas Keynua</th>
+          <th>Firmas sistema</th>
+          <th>Tasa firma</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Ago 2025</td><td>686</td><td>801</td><td>1.17x</td><td>654</td><td>623</td><td>81.6%</td></tr>
+        <tr><td>Sep 2025</td><td>1,598</td><td>1,854</td><td>1.16x</td><td>1,435</td><td>1,388</td><td>77.4%</td></tr>
+        <tr><td>Oct 2025</td><td>682</td><td>871</td><td>1.28x</td><td>684</td><td>624</td><td>78.5%</td></tr>
+        <tr><td>Nov 2025</td><td>553</td><td>688</td><td>1.24x</td><td>539</td><td>488</td><td>78.3%</td></tr>
+        <tr><td>Dic 2025</td><td>462</td><td>616</td><td>1.33x</td><td>477</td><td>424</td><td>77.4%</td></tr>
+        <tr><td>Ene 2026</td><td>480</td><td>590</td><td>1.23x</td><td>496</td><td>445</td><td>84.1%</td></tr>
+        <tr><td>Feb 2026</td><td>659</td><td>830</td><td>1.26x</td><td>692</td><td>620</td><td>83.4%</td></tr>
+        <tr><td>Mar 2026</td><td>994</td><td>1,262</td><td>1.27x</td><td>1,035</td><td>914</td><td>82.0%</td></tr>
+        <tr><td>Abr 2026</td><td>1,964</td><td>2,476</td><td>1.26x</td><td>1,871</td><td>1,700</td><td>75.6%</td></tr>
+        <tr><td>May 2026</td><td>992</td><td>1,334</td><td>1.34x</td><td>953</td><td>877</td><td>71.5%</td></tr>
+        <tr><td>Jun 2026</td><td>869</td><td>1,280</td><td>1.47x</td><td>937</td><td>814</td><td>73.2%</td></tr>
+        <tr><td>Jul 2026*</td><td>376</td><td>659</td><td>1.75x</td><td>474</td><td>355</td><td>71.9%</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>10,315</td><td>13,261</td><td>1.29x</td><td>10,235</td><td>9,271</td><td>77.2%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="conclusion">
+    Se crean <strong>1.29 contratos por cada aprobación</strong>. El excedente viene de adendas (0.09x) y reenvíos (0.10x). El ratio tiende al alza en meses recientes por el crecimiento de adendas.
+  </div>
+</section>
+
+<!-- SLIDE 3: Monthly trend chart -->
+<section class="slide" id="s3">
+  <div class="slide-number">03 &mdash; Evolución mensual</div>
+  <h2>Contratos creados vs firmados L12M</h2>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--border)"></div>Creados</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>Firmados (transacciones)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div>Adendas firmadas</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Re-firmas</div>
+  </div>
+
+  <div class="chart" id="mainChart">
+    <!-- JS generated -->
+  </div>
+
+  <div class="grid-2" style="margin-top:24px">
+    <div class="conclusion">
+      <strong>Pico: abril 2026</strong> con 2,476 contratos creados y 1,871 firmados. Coincide con el pico de aprobaciones (1,964).
+    </div>
+    <div class="conclusion">
+      <strong>Julio 2026 parcial:</strong> 659 creados, 474 firmados, proyecta ~950 creados y ~680 firmados al cierre.
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 4: Composition -->
+<section class="slide" id="s4">
+  <div class="slide-number">04 &mdash; Composición del gasto</div>
+  <h2>Distribución de transacciones consumidas</h2>
+
+  <div class="donut-wrap">
+    <div class="donut" style="background: conic-gradient(
+      var(--accent) 0deg 322.9deg,
+      var(--amber) 322.9deg 355.1deg,
+      var(--blue) 355.1deg 359deg,
+      var(--red) 359deg 360deg
+    );">
+      <div class="donut-center">
+        <div class="big">10,235</div>
+        <div class="small">transacciones L12M</div>
+      </div>
+    </div>
+    <div class="donut-legend">
+      <div class="donut-legend-item">
+        <div class="donut-legend-dot" style="background:var(--accent)"></div>
+        <div class="donut-legend-label">Contrato principal</div>
+        <div class="donut-legend-value">9,182 <span class="donut-legend-pct">89.7%</span></div>
+      </div>
+      <div class="donut-legend-item">
+        <div class="donut-legend-dot" style="background:var(--amber)"></div>
+        <div class="donut-legend-label">Adendas</div>
+        <div class="donut-legend-value">915 <span class="donut-legend-pct">8.9%</span></div>
+      </div>
+      <div class="donut-legend-item">
+        <div class="donut-legend-dot" style="background:var(--blue)"></div>
+        <div class="donut-legend-label">Otros (arrendamiento, préstamo)</div>
+        <div class="donut-legend-value">115 <span class="donut-legend-pct">1.1%</span></div>
+      </div>
+      <div class="donut-legend-item">
+        <div class="donut-legend-dot" style="background:var(--red)"></div>
+        <div class="donut-legend-label">Adquisición de valores</div>
+        <div class="donut-legend-value">23 <span class="donut-legend-pct">0.2%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:40px">
+    <div>
+      <h3>Nuevos tipos de contrato detectados</h3>
+      <div class="hbar-wrap">
+        <div class="hbar-label"><span>Contrato de arrendamiento financiero</span><span style="font-weight:700">101</span></div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:88%;background:var(--blue)"></div></div>
+      </div>
+      <div class="hbar-wrap">
+        <div class="hbar-label"><span>Arrendamiento y compra financiada</span><span style="font-weight:700">13</span></div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:11%;background:var(--blue)"></div></div>
+      </div>
+      <div class="hbar-wrap">
+        <div class="hbar-label"><span>Préstamo dinerario</span><span style="font-weight:700">1</span></div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:1%;background:var(--blue)"></div></div>
+      </div>
+    </div>
+    <div class="conclusion">
+      El <strong>89.7%</strong> del gasto es el contrato principal de financiamiento. Los nuevos tipos de contrato (arrendamiento financiero) aparecieron desde febrero 2026 y crecen como producto nuevo.
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 5: Adendas deep dive -->
+<section class="slide" id="s5">
+  <div class="slide-number">05 &mdash; Adendas (re-firmas de contrato)</div>
+  <h2>Adendas: crecen con la cartera <span class="trend neutral">&uarr; 3.1x</span></h2>
+
+  <div class="grid-2">
+    <div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Mes</th><th>Creadas</th><th>Firmadas</th><th>Tasa firma</th></tr></thead>
+          <tbody>
+            <tr><td>Ago 2025</td><td>30</td><td>25</td><td>83%</td></tr>
+            <tr><td>Sep 2025</td><td>36</td><td>24</td><td>67%</td></tr>
+            <tr><td>Oct 2025</td><td>96</td><td>42</td><td>44%</td></tr>
+            <tr><td>Nov 2025</td><td>97</td><td>55</td><td>57%</td></tr>
+            <tr><td>Dic 2025</td><td>102</td><td>31</td><td>30%</td></tr>
+            <tr><td>Ene 2026</td><td>67</td><td>33</td><td>49%</td></tr>
+            <tr><td>Feb 2026</td><td>113</td><td>73</td><td>65%</td></tr>
+            <tr><td>Mar 2026</td><td>175</td><td>108</td><td>62%</td></tr>
+            <tr><td>Abr 2026</td><td>298</td><td>137</td><td>46%</td></tr>
+            <tr><td>May 2026</td><td>332</td><td>168</td><td>51%</td></tr>
+            <tr><td>Jun 2026</td><td>247</td><td>134</td><td>54%</td></tr>
+            <tr><td>Jul 2026*</td><td>170</td><td>94</td><td>55%</td></tr>
+            <tr class="total-row"><td>Total</td><td>1,763</td><td>924</td><td>52%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <h3>Promedio mensual</h3>
+      <div class="kpi-row" style="grid-template-columns:1fr 1fr;margin-top:0">
+        <div class="kpi blue">
+          <div class="kpi-label">H2 2025</div>
+          <div class="kpi-value" style="font-size:32px">35/mes</div>
+          <div class="kpi-sub">Ago–Dic 2025</div>
+        </div>
+        <div class="kpi blue">
+          <div class="kpi-label">H1 2026</div>
+          <div class="kpi-value" style="font-size:32px">109/mes</div>
+          <div class="kpi-sub">Ene–Jun 2026</div>
+        </div>
+      </div>
+
+      <h3 style="margin-top:32px">Antigüedad de solicitud al firmar adenda</h3>
+      <div class="hbar-wrap">
+        <div class="hbar-label"><span>< 3 meses</span><span>151 (16%)</span></div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:16%;background:var(--green)"></div></div>
+      </div>
+      <div class="hbar-wrap">
+        <div class="hbar-label"><span>3–12 meses</span><span>475 (52%)</span></div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:52%;background:var(--amber)"></div></div>
+      </div>
+      <div class="hbar-wrap">
+        <div class="hbar-label"><span>12+ meses</span><span>293 (32%)</span></div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:32%;background:var(--red)"></div></div>
+      </div>
+
+      <div class="conclusion" style="margin-top:24px">
+        Las adendas son <strong>re-firmas de contratos vigentes</strong>, parte del flujo operativo. El 84% son para contratos de 3+ meses. Su crecimiento es proporcional al crecimiento de la cartera activa — esperado y legítimo.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 6: Waste -->
+<section class="slide" id="s6">
+  <div class="slide-number">06 &mdash; Ineficiencias</div>
+  <h2>Desperdicio identificado</h2>
+
+  <div class="grid-2">
+    <div>
+      <h3>Re-firmas del contrato principal</h3>
+      <p style="color:var(--text-muted);font-size:14px;margin-bottom:16px">213 solicitudes firmaron el contrato 2+ veces, consumiendo 356 transacciones adicionales.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Mes</th><th>Solicitudes</th><th>Firmas extra</th><th>Costo</th></tr></thead>
+          <tbody>
+            <tr><td>Ago 2025</td><td>15</td><td>26</td><td>$28</td></tr>
+            <tr><td>Sep 2025</td><td>31</td><td>53</td><td>$57</td></tr>
+            <tr><td>Oct 2025</td><td>19</td><td>33</td><td>$36</td></tr>
+            <tr><td>Nov 2025</td><td>8</td><td>15</td><td>$16</td></tr>
+            <tr><td>Dic 2025</td><td>21</td><td>34</td><td>$37</td></tr>
+            <tr><td>Ene 2026</td><td>13</td><td>24</td><td>$26</td></tr>
+            <tr><td>Feb 2026</td><td>13</td><td>21</td><td>$23</td></tr>
+            <tr><td>Mar 2026</td><td>19</td><td>27</td><td>$29</td></tr>
+            <tr><td>Abr 2026</td><td>43</td><td>50</td><td>$54</td></tr>
+            <tr><td>May 2026</td><td>18</td><td>25</td><td>$27</td></tr>
+            <tr><td>Jun 2026</td><td>19</td><td>32</td><td>$35</td></tr>
+            <tr><td>Jul 2026*</td><td>11</td><td>16</td><td>$17</td></tr>
+            <tr class="total-row"><td>Total</td><td>213</td><td>356</td><td>$384</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <h3>Reenvíos de contratos</h3>
+      <p style="color:var(--text-muted);font-size:14px;margin-bottom:16px">Solicitudes donde se creó más de 1 contrato en Keynua. No implica costo si solo se cobra por firma.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Contratos por solicitud</th><th>Solicitudes</th><th>% del total</th></tr></thead>
+          <tbody>
+            <tr><td>1 contrato</td><td>9,078</td><td>83.4%</td></tr>
+            <tr><td>2 contratos</td><td>1,291</td><td>11.9%</td></tr>
+            <tr><td>3 contratos</td><td>297</td><td>2.7%</td></tr>
+            <tr><td>4 contratos</td><td>80</td><td>0.7%</td></tr>
+            <tr><td>5+ contratos</td><td>24</td><td>0.2%</td></tr>
+            <tr class="highlight-row"><td>61 contratos</td><td>1</td><td>Caso extremo</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="conclusion" style="margin-top:20px">
+        <strong>16.6%</strong> de solicitudes generan 2+ contratos en Keynua. Si Keynua cobra por firma, esto no tiene impacto monetario directo. Si cobra por creación, son <strong>1,401 transacciones adicionales</strong> ($1,513).
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 7: Real billing data -->
+<section class="slide" id="s7">
+  <div class="slide-number">07 &mdash; Facturación real</div>
+  <h2>Pagos realizados a Keynua L12M</h2>
+
+  <div class="kpi-row">
+    <div class="kpi amber">
+      <div class="kpi-label">Total pagado L12M</div>
+      <div class="kpi-value">$15,806</div>
+      <div class="kpi-sub">Con IGV 18% ($13,395 sin IGV)</div>
+    </div>
+    <div class="kpi blue">
+      <div class="kpi-label">Transacciones compradas</div>
+      <div class="kpi-value">12,300</div>
+      <div class="kpi-sub">12x Pack 1000 + 3x Pack 100</div>
+    </div>
+    <div class="kpi green">
+      <div class="kpi-label">Costo real por tx</div>
+      <div class="kpi-value">$1.09</div>
+      <div class="kpi-sub">Sin IGV ($1.29 con IGV)</div>
+    </div>
+    <div class="kpi purple">
+      <div class="kpi-label">Saldo actual</div>
+      <div class="kpi-value">430.65</div>
+      <div class="kpi-sub">Transacciones disponibles</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div>
+      <h3>Detalle de compras L12M</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Fecha</th><th>Pack</th><th>Monto (USD)</th><th>Referencia</th></tr></thead>
+          <tbody>
+            <tr><td>2026-07-01</td><td>Pack 1000</td><td>$1,274.40</td><td>FPP1-004756</td></tr>
+            <tr><td>2026-06-08</td><td>Pack 1000</td><td>$1,274.40</td><td>FPP1-004662</td></tr>
+            <tr><td>2026-05-15</td><td>Pack 1000</td><td>$1,274.40</td><td>FPP1-004568</td></tr>
+            <tr><td>2026-04-24</td><td>Pack 1000</td><td>$1,274.40</td><td>FPP1-004451</td></tr>
+            <tr class="highlight-row"><td>2026-04-13</td><td>Pack 100</td><td>$171.10</td><td>FPP1-004388</td></tr>
+            <tr><td>2026-04-13</td><td>Pack 1000</td><td>$1,274.40</td><td>FPP1-004389</td></tr>
+            <tr><td>2026-03-25</td><td>Pack 1000</td><td>$1,274.40</td><td>FPP1-004320</td></tr>
+            <tr><td>2026-02-24</td><td>Pack 1000</td><td>$1,274.40</td><td>FPP1-004176</td></tr>
+            <tr class="highlight-row"><td>2026-02-23</td><td>Pack 100</td><td>$171.10</td><td>FPP1-004173</td></tr>
+            <tr><td>2026-01-09</td><td>Pack 1000</td><td>$1,274.40</td><td>FPP1-003980</td></tr>
+            <tr><td>2025-11-17</td><td>Pack 1000</td><td>$1,274.40</td><td>FPP1-003731</td></tr>
+            <tr><td>2025-10-07</td><td>Pack 1000</td><td>$1,274.40</td><td>FPP1-003520</td></tr>
+            <tr class="highlight-row"><td>2025-09-30</td><td>Pack 100</td><td>$171.10</td><td>FPP1-003514</td></tr>
+            <tr><td>2025-09-17</td><td>Pack 1000</td><td>$1,274.40</td><td>FPP1-003441</td></tr>
+            <tr><td>2025-08-20</td><td>Pack 1000</td><td>$1,274.40</td><td>FPP1-003354</td></tr>
+            <tr class="total-row"><td>Total</td><td>15 compras</td><td>$15,806.10</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <h3>Hallazgos</h3>
+
+      <div class="conclusion" style="border-left-color:var(--green)">
+        <strong>Ya compran Pack 1000</strong> en el 80% de las compras. Esto es correcto — es el pack más eficiente a $1.08/tx.
+      </div>
+
+      <div class="conclusion" style="border-left-color:var(--red);margin-top:16px">
+        <strong>3 compras de emergencia Pack 100</strong> a $1.45/tx (Sep 2025, Feb 2026, Abr 2026). Sobrecosto de $131 con IGV vs haber comprado Pack 1000.
+      </div>
+
+      <div class="conclusion" style="border-left-color:var(--amber);margin-top:16px">
+        <strong>Abril 2026: 3 compras en un mes</strong> ($2,719.90). El pico de aprobaciones (1,964) agotó el saldo — se compró Pack 100 de emergencia + 2x Pack 1000.
+      </div>
+
+      <div class="conclusion" style="border-left-color:var(--accent);margin-top:16px">
+        <strong>Sin compra en diciembre 2025.</strong> El pack de noviembre duró 2 meses gracias a la baja estacional (462 aprobaciones en diciembre).
+      </div>
+
+      <h3 style="margin-top:24px">Frecuencia de compra</h3>
+      <div class="hbar-wrap">
+        <div class="hbar-label"><span>Promedio: 1 Pack 1000 cada 30 días</span></div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:85%;background:var(--accent)"></div></div>
+      </div>
+      <div class="hbar-wrap">
+        <div class="hbar-label"><span>Pack 100 de emergencia: 1 cada 4 meses</span></div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:25%;background:var(--red)"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 8: Conclusions -->
+<section class="slide" id="s8">
+  <div class="slide-number">08 &mdash; Conclusiones</div>
+  <h2>Hallazgos y acciones</h2>
+
+  <div class="grid-2">
+    <div>
+      <div class="kpi green" style="margin-bottom:20px">
+        <div class="kpi-label">Eficiencia del sistema</div>
+        <div class="kpi-value" style="font-size:56px">96.5%</div>
+        <div class="kpi-sub">Solo 3.5% de transacciones son desperdicio</div>
+      </div>
+
+      <div class="conclusion" style="border-left-color:var(--green)">
+        <strong>El sistema opera correctamente.</strong> La hipótesis de que "no lo estamos usando bien" no se confirma. El desperdicio real es $384/año por re-firmas duplicadas — no es material.
+      </div>
+
+      <div class="conclusion" style="border-left-color:var(--accent);margin-top:16px">
+        <strong>Las adendas son parte del flujo.</strong> Son re-firmas de contratos vigentes. Su crecimiento (35 → 109/mes) es proporcional al crecimiento de la cartera activa. Deben presupuestarse como costo operativo recurrente.
+      </div>
+
+      <div class="conclusion" style="border-left-color:var(--blue);margin-top:16px">
+        <strong>Nuevos productos suman 115 tx.</strong> Los contratos de arrendamiento financiero empezaron en febrero 2026. Si el producto escala, considerar negociar tarifa por volumen.
+      </div>
+    </div>
+    <div>
+      <h3>Acciones recomendadas</h3>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+          <div style="width:28px;height:28px;background:var(--green-muted);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--green);font-size:13px">1</div>
+          <div style="font-weight:600">Comprar siempre Pack 1000</div>
+        </div>
+        <div style="font-size:13px;color:var(--text-muted)">Ahorro de $239/mes vs Pack 500. Con 853 tx/mes promedio, un pack dura ~5 semanas.</div>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+          <div style="width:28px;height:28px;background:var(--amber-muted);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--amber);font-size:13px">2</div>
+          <div style="font-weight:600">Validar con Keynua el modelo de cobro</div>
+        </div>
+        <div style="font-size:13px;color:var(--text-muted)">Confirmar si se cobra por firma o por creación. Si es por creación, los reenvíos cuestan $1,513/año adicional.</div>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+          <div style="width:28px;height:28px;background:var(--blue-muted);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--blue);font-size:13px">3</div>
+          <div style="font-weight:600">Negociar tarifa enterprise</div>
+        </div>
+        <div style="font-size:13px;color:var(--text-muted)">Con 10,000+ tx/año y crecimiento sostenido, hay espacio para negociar por debajo de $1.08/tx.</div>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+          <div style="width:28px;height:28px;background:var(--purple-muted);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--purple);font-size:13px">4</div>
+          <div style="font-weight:600">Presupuestar adendas como costo de cartera</div>
+        </div>
+        <div style="font-size:13px;color:var(--text-muted)">Con la cartera creciendo, proyectar 120-150 adendas/mes para H2 2026. Representan ~$130-160/mes adicionales al costo base.</div>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+          <div style="width:28px;height:28px;background:var(--green-muted);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--green);font-size:13px">5</div>
+          <div style="font-weight:600">Limitar re-firmas duplicadas</div>
+        </div>
+        <div style="font-size:13px;color:var(--text-muted)">Poner cap de 1 firma del contrato principal por solicitud. Las 356 re-firmas duplicadas no tienen keynua_error ni dni_mismatch — son reenvíos innecesarios.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>BaldeCash &bull; Julio 2026</span>
+    <span>* Julio 2026: datos parciales al 24 de julio</span>
+  </div>
+</section>
+
+</div>
+
+<script>
+// Generate main chart
+const chartData = [
+  { mes: 'Ago 25', created: 801, signed: 654, adenda: 25, refirma: 26 },
+  { mes: 'Sep 25', created: 1854, signed: 1435, adenda: 24, refirma: 53 },
+  { mes: 'Oct 25', created: 871, signed: 684, adenda: 42, refirma: 33 },
+  { mes: 'Nov 25', created: 688, signed: 539, adenda: 55, refirma: 15 },
+  { mes: 'Dic 25', created: 616, signed: 477, adenda: 31, refirma: 34 },
+  { mes: 'Ene 26', created: 590, signed: 496, adenda: 33, refirma: 24 },
+  { mes: 'Feb 26', created: 830, signed: 692, adenda: 73, refirma: 21 },
+  { mes: 'Mar 26', created: 1262, signed: 1035, adenda: 108, refirma: 27 },
+  { mes: 'Abr 26', created: 2476, signed: 1871, adenda: 137, refirma: 50 },
+  { mes: 'May 26', created: 1334, signed: 953, adenda: 168, refirma: 25 },
+  { mes: 'Jun 26', created: 1280, signed: 937, adenda: 134, refirma: 32 },
+  { mes: 'Jul 26', created: 659, signed: 474, adenda: 94, refirma: 16 }
+];
+
+const maxVal = Math.max(...chartData.map(d => d.created));
+const chart = document.getElementById('mainChart');
+
+chartData.forEach(d => {
+  const group = document.createElement('div');
+  group.className = 'chart-bar-group';
+
+  const bars = document.createElement('div');
+  bars.className = 'chart-bars';
+
+  const h = v => Math.max(2, (v / maxVal) * 220);
+
+  bars.innerHTML = `
+    <div class="chart-bar created" style="height:${h(d.created)}px" title="Creados: ${d.created}"></div>
+    <div class="chart-bar signed" style="height:${h(d.signed)}px" title="Firmados: ${d.signed}"></div>
+    <div class="chart-bar adenda" style="height:${h(d.adenda)}px" title="Adendas: ${d.adenda}"></div>
+    <div class="chart-bar waste" style="height:${h(d.refirma)}px" title="Re-firmas: ${d.refirma}"></div>
+  `;
+
+  const label = document.createElement('div');
+  label.className = 'chart-label';
+  label.textContent = d.mes;
+
+  group.appendChild(bars);
+  group.appendChild(label);
+  chart.appendChild(group);
+});
+
+// Nav active state
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
+      document.querySelector(`.nav a[href="#${e.target.id}"]`)?.classList.add('active');
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.slide').forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
