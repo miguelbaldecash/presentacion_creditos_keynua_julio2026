@@ -176,7 +176,6 @@
   .chart-bar.adenda { background: var(--amber); }
   .chart-bar.waste { background: var(--red); }
   .chart-label { font-size: 10px; color: var(--text-muted); margin-top: 6px; font-weight: 500; }
-  .chart-val { font-size: 10px; color: var(--text-muted); font-weight: 600; }
 
   /* Legend */
   .legend { display: flex; gap: 24px; margin: 16px 0; }
@@ -218,20 +217,6 @@
   .trend.down { background: var(--green-muted); color: var(--green); }
   .trend.neutral { background: var(--blue-muted); color: var(--blue); }
 
-  /* Pricing cards */
-  .pricing-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 24px 0; }
-  .pricing-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px;
-    text-align: center;
-  }
-  .pricing-card.recommended { border-color: var(--accent); background: rgba(99,102,241,0.08); }
-  .pricing-card .pack { font-size: 24px; font-weight: 700; }
-  .pricing-card .price { font-size: 18px; font-weight: 600; color: var(--accent-light); margin: 8px 0; }
-  .pricing-card .unit { font-size: 13px; color: var(--text-muted); }
-
   /* Conclusion box */
   .conclusion {
     background: var(--surface);
@@ -246,7 +231,6 @@
 
   /* Grid layout */
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
 
   /* Horizontal bar */
   .hbar-wrap { margin: 8px 0; }
@@ -266,6 +250,35 @@
     color: var(--text-muted);
   }
 
+  /* Filter select */
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .filter-bar label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .filter-bar select {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .filter-bar select:hover { border-color: var(--accent); }
+  .filter-bar select:focus { border-color: var(--accent-light); }
+
   /* Scrollbar */
   .slides::-webkit-scrollbar { width: 0; }
 
@@ -283,9 +296,11 @@
   <a href="#s3" title="Tendencia"></a>
   <a href="#s4" title="Composición"></a>
   <a href="#s5" title="Adendas"></a>
-  <a href="#s6" title="Ineficiencias"></a>
-  <a href="#s7" title="Pricing"></a>
-  <a href="#s8" title="Conclusiones"></a>
+  <a href="#s6" title="Créditos perdidos"></a>
+  <a href="#s7" title="Ineficiencias"></a>
+  <a href="#s8" title="Facturación"></a>
+  <a href="#s9" title="Detalle mensual"></a>
+  <a href="#s10" title="Conclusiones"></a>
 </nav>
 
 <div class="slides">
@@ -298,75 +313,74 @@
 
   <div class="kpi-row" style="margin-top:48px">
     <div class="kpi blue">
-      <div class="kpi-label">Transacciones consumidas</div>
-      <div class="kpi-value">10,235</div>
-      <div class="kpi-sub">Contratos firmados en Keynua</div>
+      <div class="kpi-label">Créditos consumidos</div>
+      <div class="kpi-value">13,372</div>
+      <div class="kpi-sub">Contratos creados (ContractStarted)</div>
     </div>
     <div class="kpi green">
-      <div class="kpi-label">Firmas efectivas</div>
-      <div class="kpi-value">9,271</div>
-      <div class="kpi-sub">Solicitudes con firma completa</div>
+      <div class="kpi-label">Firmas completadas</div>
+      <div class="kpi-value">10,307</div>
+      <div class="kpi-sub">Contratos firmados (ContractFinished)</div>
+    </div>
+    <div class="kpi red">
+      <div class="kpi-label">Créditos perdidos</div>
+      <div class="kpi-value">3,065</div>
+      <div class="kpi-sub">22.9% &bull; $3,310 sin IGV</div>
     </div>
     <div class="kpi amber">
       <div class="kpi-label">Pagado L12M</div>
       <div class="kpi-value">$15,806</div>
-      <div class="kpi-sub">Con IGV ($13,395 sin IGV) &bull; 15 compras</div>
-    </div>
-    <div class="kpi green">
-      <div class="kpi-label">Desperdicio</div>
-      <div class="kpi-value">$384</div>
-      <div class="kpi-sub">356 re-firmas duplicadas (3.5%)</div>
+      <div class="kpi-sub">Con IGV &bull; 15 compras</div>
     </div>
   </div>
 
-  <div class="conclusion">
-    El sistema opera con <strong>96.5% de eficiencia</strong>. El desperdicio real es mínimo ($384/año). Las adendas (re-firma de contratos) son parte del flujo operativo y crecen proporcionalmente a la cartera activa.
+  <div class="conclusion" style="border-left-color:var(--red)">
+    De cada 10 créditos consumidos, <strong>2.3 se pierden</strong> en contratos que nunca se firman. Desde abril 2026, se detectan <strong>693 contratos fantasma</strong> que ni siquiera fueron abiertos por el usuario. Las adendas tienen la tasa de pérdida más alta: <strong>48.4%</strong>.
   </div>
 
   <div class="footer">
     <span>BaldeCash &bull; Análisis interno</span>
-    <span>Fuente: databalde-cashsys + API Keynua</span>
+    <span>Fuente: keynua_webhook &bull; databalde-cashsys</span>
   </div>
 </section>
 
 <!-- SLIDE 2: Funnel -->
 <section class="slide" id="s2">
   <div class="slide-number">02 &mdash; Funnel de conversión</div>
-  <h2>Aprobaciones &rarr; Contratos &rarr; Firmas</h2>
+  <h2>Créditos consumidos vs firmas completadas</h2>
 
   <div class="table-wrap">
     <table>
       <thead>
         <tr>
           <th>Mes</th>
-          <th>Aprobaciones</th>
-          <th>Contratos creados</th>
-          <th>Ratio crea/aprob</th>
-          <th>Firmas Keynua</th>
-          <th>Firmas sistema</th>
-          <th>Tasa firma</th>
+          <th>Creados</th>
+          <th>Firmados</th>
+          <th>Perdidos</th>
+          <th>% Perdido</th>
+          <th>Costo perdido</th>
         </tr>
       </thead>
       <tbody>
-        <tr><td>Ago 2025</td><td>686</td><td>801</td><td>1.17x</td><td>654</td><td>623</td><td>81.6%</td></tr>
-        <tr><td>Sep 2025</td><td>1,598</td><td>1,854</td><td>1.16x</td><td>1,435</td><td>1,388</td><td>77.4%</td></tr>
-        <tr><td>Oct 2025</td><td>682</td><td>871</td><td>1.28x</td><td>684</td><td>624</td><td>78.5%</td></tr>
-        <tr><td>Nov 2025</td><td>553</td><td>688</td><td>1.24x</td><td>539</td><td>488</td><td>78.3%</td></tr>
-        <tr><td>Dic 2025</td><td>462</td><td>616</td><td>1.33x</td><td>477</td><td>424</td><td>77.4%</td></tr>
-        <tr><td>Ene 2026</td><td>480</td><td>590</td><td>1.23x</td><td>496</td><td>445</td><td>84.1%</td></tr>
-        <tr><td>Feb 2026</td><td>659</td><td>830</td><td>1.26x</td><td>692</td><td>620</td><td>83.4%</td></tr>
-        <tr><td>Mar 2026</td><td>994</td><td>1,262</td><td>1.27x</td><td>1,035</td><td>914</td><td>82.0%</td></tr>
-        <tr><td>Abr 2026</td><td>1,964</td><td>2,476</td><td>1.26x</td><td>1,871</td><td>1,700</td><td>75.6%</td></tr>
-        <tr><td>May 2026</td><td>992</td><td>1,334</td><td>1.34x</td><td>953</td><td>877</td><td>71.5%</td></tr>
-        <tr><td>Jun 2026</td><td>869</td><td>1,280</td><td>1.47x</td><td>937</td><td>814</td><td>73.2%</td></tr>
-        <tr><td>Jul 2026*</td><td>376</td><td>659</td><td>1.75x</td><td>474</td><td>355</td><td>71.9%</td></tr>
-        <tr class="total-row"><td>TOTAL</td><td>10,315</td><td>13,261</td><td>1.29x</td><td>10,235</td><td>9,271</td><td>77.2%</td></tr>
+        <tr><td>Ago 2025</td><td>801</td><td>654</td><td>147</td><td>18.4%</td><td>$159</td></tr>
+        <tr><td>Sep 2025</td><td>1,854</td><td>1,434</td><td>420</td><td>22.7%</td><td>$454</td></tr>
+        <tr><td>Oct 2025</td><td>871</td><td>684</td><td>187</td><td>21.5%</td><td>$202</td></tr>
+        <tr><td>Nov 2025</td><td>688</td><td>538</td><td>150</td><td>21.8%</td><td>$162</td></tr>
+        <tr><td>Dic 2025</td><td>616</td><td>477</td><td>139</td><td>22.6%</td><td>$150</td></tr>
+        <tr><td>Ene 2026</td><td>590</td><td>494</td><td>96</td><td>16.3%</td><td>$104</td></tr>
+        <tr><td>Feb 2026</td><td>830</td><td>691</td><td>139</td><td>16.7%</td><td>$150</td></tr>
+        <tr><td>Mar 2026</td><td>1,262</td><td>1,034</td><td>228</td><td>18.1%</td><td>$246</td></tr>
+        <tr class="highlight-row"><td>Abr 2026</td><td>2,476</td><td>1,870</td><td>606</td><td>24.5%</td><td>$654</td></tr>
+        <tr class="highlight-row"><td>May 2026</td><td>1,334</td><td>951</td><td>383</td><td>28.7%</td><td>$414</td></tr>
+        <tr class="highlight-row"><td>Jun 2026</td><td>1,280</td><td>936</td><td>344</td><td>26.9%</td><td>$372</td></tr>
+        <tr class="highlight-row"><td>Jul 2026*</td><td>770</td><td>544</td><td>226</td><td>29.4%</td><td>$244</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>13,372</td><td>10,307</td><td>3,065</td><td>22.9%</td><td>$3,310</td></tr>
       </tbody>
     </table>
   </div>
 
-  <div class="conclusion">
-    Se crean <strong>1.29 contratos por cada aprobación</strong>. El excedente viene de adendas (0.09x) y reenvíos (0.10x). El ratio tiende al alza en meses recientes por el crecimiento de adendas.
+  <div class="conclusion" style="border-left-color:var(--red)">
+    La tasa de pérdida <strong>empeoró desde abril 2026</strong>: pasó de 18-22% a 25-29%. Coincide con la aparición de los 693 contratos fantasma (solo ContractStarted, sin interacción del usuario).
   </div>
 </section>
 
@@ -376,22 +390,20 @@
   <h2>Contratos creados vs firmados L12M</h2>
 
   <div class="legend">
-    <div class="legend-item"><div class="legend-dot" style="background:var(--border)"></div>Creados</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>Firmados (transacciones)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--border)"></div>Creados (créditos)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>Firmados</div>
     <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div>Adendas firmadas</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Re-firmas</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Perdidos</div>
   </div>
 
-  <div class="chart" id="mainChart">
-    <!-- JS generated -->
-  </div>
+  <div class="chart" id="mainChart"></div>
 
   <div class="grid-2" style="margin-top:24px">
     <div class="conclusion">
-      <strong>Pico: abril 2026</strong> con 2,476 contratos creados y 1,871 firmados. Coincide con el pico de aprobaciones (1,964).
+      <strong>Pico: abril 2026</strong> con 2,476 créditos consumidos, 1,870 firmas y 606 perdidos. El mes con mayor desperdicio absoluto.
     </div>
-    <div class="conclusion">
-      <strong>Julio 2026 parcial:</strong> 659 creados, 474 firmados, proyecta ~950 creados y ~680 firmados al cierre.
+    <div class="conclusion" style="border-left-color:var(--red)">
+      <strong>Tendencia negativa:</strong> la brecha entre creados y firmados se amplía cada mes desde abril.
     </div>
   </div>
 </section>
@@ -409,29 +421,29 @@
       var(--red) 359deg 360deg
     );">
       <div class="donut-center">
-        <div class="big">10,235</div>
-        <div class="small">transacciones L12M</div>
+        <div class="big">10,307</div>
+        <div class="small">firmas completadas</div>
       </div>
     </div>
     <div class="donut-legend">
       <div class="donut-legend-item">
         <div class="donut-legend-dot" style="background:var(--accent)"></div>
         <div class="donut-legend-label">Contrato principal</div>
-        <div class="donut-legend-value">9,182 <span class="donut-legend-pct">89.7%</span></div>
+        <div class="donut-legend-value">9,245 <span class="donut-legend-pct">89.7%</span></div>
       </div>
       <div class="donut-legend-item">
         <div class="donut-legend-dot" style="background:var(--amber)"></div>
         <div class="donut-legend-label">Adendas</div>
-        <div class="donut-legend-value">915 <span class="donut-legend-pct">8.9%</span></div>
+        <div class="donut-legend-value">923 <span class="donut-legend-pct">9.0%</span></div>
       </div>
       <div class="donut-legend-item">
         <div class="donut-legend-dot" style="background:var(--blue)"></div>
         <div class="donut-legend-label">Otros (arrendamiento, préstamo)</div>
-        <div class="donut-legend-value">115 <span class="donut-legend-pct">1.1%</span></div>
+        <div class="donut-legend-value">116 <span class="donut-legend-pct">1.1%</span></div>
       </div>
       <div class="donut-legend-item">
         <div class="donut-legend-dot" style="background:var(--red)"></div>
-        <div class="donut-legend-label">Adquisición de valores</div>
+        <div class="donut-legend-label">Documento externo / Adq. valores</div>
         <div class="donut-legend-value">23 <span class="donut-legend-pct">0.2%</span></div>
       </div>
     </div>
@@ -454,7 +466,7 @@
       </div>
     </div>
     <div class="conclusion">
-      El <strong>89.7%</strong> del gasto es el contrato principal de financiamiento. Los nuevos tipos de contrato (arrendamiento financiero) aparecieron desde febrero 2026 y crecen como producto nuevo.
+      El <strong>89.7%</strong> de las firmas son el contrato principal. Arrendamiento financiero apareció en febrero 2026 como producto nuevo.
     </div>
   </div>
 </section>
@@ -468,118 +480,176 @@
     <div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Mes</th><th>Creadas</th><th>Firmadas</th><th>Tasa firma</th></tr></thead>
+          <thead><tr><th>Mes</th><th>Creadas</th><th>Firmadas</th><th>Perdidas</th><th>% Perdido</th></tr></thead>
           <tbody>
-            <tr><td>Ago 2025</td><td>30</td><td>25</td><td>83%</td></tr>
-            <tr><td>Sep 2025</td><td>36</td><td>24</td><td>67%</td></tr>
-            <tr><td>Oct 2025</td><td>96</td><td>42</td><td>44%</td></tr>
-            <tr><td>Nov 2025</td><td>97</td><td>55</td><td>57%</td></tr>
-            <tr><td>Dic 2025</td><td>102</td><td>31</td><td>30%</td></tr>
-            <tr><td>Ene 2026</td><td>67</td><td>33</td><td>49%</td></tr>
-            <tr><td>Feb 2026</td><td>113</td><td>73</td><td>65%</td></tr>
-            <tr><td>Mar 2026</td><td>175</td><td>108</td><td>62%</td></tr>
-            <tr><td>Abr 2026</td><td>298</td><td>137</td><td>46%</td></tr>
-            <tr><td>May 2026</td><td>332</td><td>168</td><td>51%</td></tr>
-            <tr><td>Jun 2026</td><td>247</td><td>134</td><td>54%</td></tr>
-            <tr><td>Jul 2026*</td><td>170</td><td>94</td><td>55%</td></tr>
-            <tr class="total-row"><td>Total</td><td>1,763</td><td>924</td><td>52%</td></tr>
+            <tr><td>Ago 2025</td><td>30</td><td>25</td><td>5</td><td>17%</td></tr>
+            <tr><td>Sep 2025</td><td>36</td><td>24</td><td>12</td><td>33%</td></tr>
+            <tr><td>Oct 2025</td><td>96</td><td>42</td><td>54</td><td>56%</td></tr>
+            <tr><td>Nov 2025</td><td>97</td><td>55</td><td>42</td><td>43%</td></tr>
+            <tr><td>Dic 2025</td><td>102</td><td>31</td><td>71</td><td>70%</td></tr>
+            <tr><td>Ene 2026</td><td>67</td><td>33</td><td>34</td><td>51%</td></tr>
+            <tr><td>Feb 2026</td><td>113</td><td>73</td><td>40</td><td>35%</td></tr>
+            <tr><td>Mar 2026</td><td>175</td><td>108</td><td>67</td><td>38%</td></tr>
+            <tr><td>Abr 2026</td><td>298</td><td>137</td><td>161</td><td>54%</td></tr>
+            <tr><td>May 2026</td><td>332</td><td>168</td><td>164</td><td>49%</td></tr>
+            <tr><td>Jun 2026</td><td>247</td><td>134</td><td>113</td><td>46%</td></tr>
+            <tr><td>Jul 2026*</td><td>170</td><td>94</td><td>76</td><td>45%</td></tr>
+            <tr class="total-row"><td>Total</td><td>1,790</td><td>923</td><td>867</td><td>48.4%</td></tr>
           </tbody>
         </table>
       </div>
     </div>
     <div>
-      <h3>Promedio mensual</h3>
+      <h3>Tasa de pérdida: 48.4%</h3>
       <div class="kpi-row" style="grid-template-columns:1fr 1fr;margin-top:0">
-        <div class="kpi blue">
-          <div class="kpi-label">H2 2025</div>
-          <div class="kpi-value" style="font-size:32px">35/mes</div>
-          <div class="kpi-sub">Ago–Dic 2025</div>
+        <div class="kpi amber">
+          <div class="kpi-label">Adendas creadas</div>
+          <div class="kpi-value" style="font-size:32px">1,790</div>
+          <div class="kpi-sub">L12M</div>
         </div>
-        <div class="kpi blue">
-          <div class="kpi-label">H1 2026</div>
-          <div class="kpi-value" style="font-size:32px">109/mes</div>
-          <div class="kpi-sub">Ene–Jun 2026</div>
+        <div class="kpi red">
+          <div class="kpi-label">Adendas perdidas</div>
+          <div class="kpi-value" style="font-size:32px">867</div>
+          <div class="kpi-sub">$936 sin IGV</div>
         </div>
       </div>
 
-      <h3 style="margin-top:32px">Antigüedad de solicitud al firmar adenda</h3>
-      <div class="hbar-wrap">
-        <div class="hbar-label"><span>< 3 meses</span><span>151 (16%)</span></div>
-        <div class="hbar-track"><div class="hbar-fill" style="width:16%;background:var(--green)"></div></div>
-      </div>
-      <div class="hbar-wrap">
-        <div class="hbar-label"><span>3–12 meses</span><span>475 (52%)</span></div>
-        <div class="hbar-track"><div class="hbar-fill" style="width:52%;background:var(--amber)"></div></div>
-      </div>
-      <div class="hbar-wrap">
-        <div class="hbar-label"><span>12+ meses</span><span>293 (32%)</span></div>
-        <div class="hbar-track"><div class="hbar-fill" style="width:32%;background:var(--red)"></div></div>
+      <div class="conclusion" style="margin-top:24px;border-left-color:var(--red)">
+        Las adendas son parte del flujo operativo, pero <strong>casi la mitad nunca se firman</strong>. Cada adenda no firmada consume 1 crédito. Diciembre 2025 fue el peor mes: 70% de adendas perdidas.
       </div>
 
-      <div class="conclusion" style="margin-top:24px">
-        Las adendas son <strong>re-firmas de contratos vigentes</strong>, parte del flujo operativo. El 84% son para contratos de 3+ meses. Su crecimiento es proporcional al crecimiento de la cartera activa — esperado y legítimo.
+      <div class="conclusion" style="margin-top:16px">
+        De las 867 adendas perdidas, <strong>311 son fantasma</strong> (desde abril 2026): se crearon pero el usuario nunca las abrió.
       </div>
     </div>
   </div>
 </section>
 
-<!-- SLIDE 6: Waste -->
+<!-- SLIDE 6: Ghost contracts -->
 <section class="slide" id="s6">
-  <div class="slide-number">06 &mdash; Ineficiencias</div>
-  <h2>Desperdicio identificado</h2>
+  <div class="slide-number">06 &mdash; Contratos fantasma</div>
+  <h2>693 créditos sin interacción <span class="trend up">desde Abr 2026</span></h2>
+
+  <div class="kpi-row">
+    <div class="kpi red">
+      <div class="kpi-label">Contratos fantasma</div>
+      <div class="kpi-value">693</div>
+      <div class="kpi-sub">Solo ContractStarted, sin ItemUpdated</div>
+    </div>
+    <div class="kpi amber">
+      <div class="kpi-label">Costo perdido</div>
+      <div class="kpi-value">$748</div>
+      <div class="kpi-sub">Sin IGV &bull; $883 con IGV</div>
+    </div>
+    <div class="kpi blue">
+      <div class="kpi-label">Contratos principales</div>
+      <div class="kpi-value">369</div>
+      <div class="kpi-sub">53% del total fantasma</div>
+    </div>
+    <div class="kpi purple">
+      <div class="kpi-label">Adendas fantasma</div>
+      <div class="kpi-value">321</div>
+      <div class="kpi-sub">46% del total fantasma</div>
+    </div>
+  </div>
 
   <div class="grid-2">
     <div>
-      <h3>Re-firmas del contrato principal</h3>
-      <p style="color:var(--text-muted);font-size:14px;margin-bottom:16px">213 solicitudes firmaron el contrato 2+ veces, consumiendo 356 transacciones adicionales.</p>
+      <h3>Aparición por mes</h3>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Mes</th><th>Solicitudes</th><th>Firmas extra</th><th>Costo</th></tr></thead>
+          <thead><tr><th>Mes</th><th>Contratos</th><th>Adendas</th><th>Otros</th><th>Total</th></tr></thead>
           <tbody>
-            <tr><td>Ago 2025</td><td>15</td><td>26</td><td>$28</td></tr>
-            <tr><td>Sep 2025</td><td>31</td><td>53</td><td>$57</td></tr>
-            <tr><td>Oct 2025</td><td>19</td><td>33</td><td>$36</td></tr>
-            <tr><td>Nov 2025</td><td>8</td><td>15</td><td>$16</td></tr>
-            <tr><td>Dic 2025</td><td>21</td><td>34</td><td>$37</td></tr>
-            <tr><td>Ene 2026</td><td>13</td><td>24</td><td>$26</td></tr>
-            <tr><td>Feb 2026</td><td>13</td><td>21</td><td>$23</td></tr>
-            <tr><td>Mar 2026</td><td>19</td><td>27</td><td>$29</td></tr>
-            <tr><td>Abr 2026</td><td>43</td><td>50</td><td>$54</td></tr>
-            <tr><td>May 2026</td><td>18</td><td>25</td><td>$27</td></tr>
-            <tr><td>Jun 2026</td><td>19</td><td>32</td><td>$35</td></tr>
-            <tr><td>Jul 2026*</td><td>11</td><td>16</td><td>$17</td></tr>
-            <tr class="total-row"><td>Total</td><td>213</td><td>356</td><td>$384</td></tr>
+            <tr><td>Ago 2025 – Mar 2026</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+            <tr class="highlight-row"><td>Abr 2026</td><td>98</td><td>69</td><td>3</td><td>170</td></tr>
+            <tr class="highlight-row"><td>May 2026</td><td>119</td><td>103</td><td>0</td><td>222</td></tr>
+            <tr class="highlight-row"><td>Jun 2026</td><td>83</td><td>84</td><td>0</td><td>167</td></tr>
+            <tr class="highlight-row"><td>Jul 2026*</td><td>69</td><td>65</td><td>0</td><td>134</td></tr>
+            <tr class="total-row"><td>Total</td><td>369</td><td>321</td><td>3</td><td>693</td></tr>
           </tbody>
         </table>
       </div>
     </div>
     <div>
-      <h3>Reenvíos de contratos</h3>
-      <p style="color:var(--text-muted);font-size:14px;margin-bottom:16px">Solicitudes donde se creó más de 1 contrato en Keynua. No implica costo si solo se cobra por firma.</p>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Contratos por solicitud</th><th>Solicitudes</th><th>% del total</th></tr></thead>
-          <tbody>
-            <tr><td>1 contrato</td><td>9,078</td><td>83.4%</td></tr>
-            <tr><td>2 contratos</td><td>1,291</td><td>11.9%</td></tr>
-            <tr><td>3 contratos</td><td>297</td><td>2.7%</td></tr>
-            <tr><td>4 contratos</td><td>80</td><td>0.7%</td></tr>
-            <tr><td>5+ contratos</td><td>24</td><td>0.2%</td></tr>
-            <tr class="highlight-row"><td>61 contratos</td><td>1</td><td>Caso extremo</td></tr>
-          </tbody>
-        </table>
+      <h3>Destino de los 693</h3>
+      <div class="hbar-wrap">
+        <div class="hbar-label"><span>Reenvío (solicitud tiene otra firma)</span><span style="font-weight:700">372 (54%)</span></div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:54%;background:var(--amber)"></div></div>
+      </div>
+      <div class="hbar-wrap">
+        <div class="hbar-label"><span>Total loss (solicitud sin firma alguna)</span><span style="font-weight:700">321 (46%)</span></div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:46%;background:var(--red)"></div></div>
       </div>
 
-      <div class="conclusion" style="margin-top:20px">
-        <strong>16.6%</strong> de solicitudes generan 2+ contratos en Keynua. Si Keynua cobra por firma, esto no tiene impacto monetario directo. Si cobra por creación, son <strong>1,401 transacciones adicionales</strong> ($1,513).
+      <div class="conclusion" style="margin-top:24px;border-left-color:var(--red)">
+        <strong>Antes de abril 2026: cero contratos fantasma.</strong> Algo cambió en el sistema o proceso ese mes. 372 son reenvíos donde se creó un contrato nuevo sin que el usuario abriera el anterior. 321 son solicitudes que nunca tuvieron firma alguna.
+      </div>
+
+      <div class="conclusion" style="margin-top:16px;border-left-color:var(--amber)">
+        <strong>Ritmo actual: 170/mes.</strong> Si no se corrige, serán ~2,000 créditos fantasma adicionales en 12 meses ($2,160).
       </div>
     </div>
   </div>
 </section>
 
-<!-- SLIDE 7: Real billing data -->
+<!-- SLIDE 7: Waste breakdown -->
 <section class="slide" id="s7">
-  <div class="slide-number">07 &mdash; Facturación real</div>
+  <div class="slide-number">07 &mdash; Pérdida por tipo de contrato</div>
+  <h2>Tasa de pérdida por tipo</h2>
+
+  <div class="grid-2">
+    <div>
+      <h3>Contratos principales</h3>
+      <div class="kpi-row" style="grid-template-columns:1fr 1fr 1fr;margin-top:0">
+        <div class="kpi blue">
+          <div class="kpi-label">Creados</div>
+          <div class="kpi-value" style="font-size:28px">11,412</div>
+        </div>
+        <div class="kpi green">
+          <div class="kpi-label">Firmados</div>
+          <div class="kpi-value" style="font-size:28px">9,245</div>
+        </div>
+        <div class="kpi red">
+          <div class="kpi-label">Perdidos</div>
+          <div class="kpi-value" style="font-size:28px">2,167</div>
+          <div class="kpi-sub">19.0%</div>
+        </div>
+      </div>
+      <div class="conclusion" style="margin-top:16px">
+        <strong>1 de cada 5</strong> contratos principales se pierde. Costo: $2,340 sin IGV. Incluye 369 fantasma (desde abril) + 1,798 donde el usuario empezó pero no completó.
+      </div>
+    </div>
+    <div>
+      <h3>Adendas</h3>
+      <div class="kpi-row" style="grid-template-columns:1fr 1fr 1fr;margin-top:0">
+        <div class="kpi blue">
+          <div class="kpi-label">Creadas</div>
+          <div class="kpi-value" style="font-size:28px">1,790</div>
+        </div>
+        <div class="kpi green">
+          <div class="kpi-label">Firmadas</div>
+          <div class="kpi-value" style="font-size:28px">923</div>
+        </div>
+        <div class="kpi red">
+          <div class="kpi-label">Perdidas</div>
+          <div class="kpi-value" style="font-size:28px">867</div>
+          <div class="kpi-sub">48.4%</div>
+        </div>
+      </div>
+      <div class="conclusion" style="margin-top:16px;border-left-color:var(--red)">
+        <strong>1 de cada 2</strong> adendas se pierde. Tasa 2.5x peor que contratos. Incluye 321 fantasma (desde abril) + 546 donde el usuario empezó pero no completó.
+      </div>
+    </div>
+  </div>
+
+  <div class="conclusion" style="margin-top:32px;border-left-color:var(--amber)">
+    <strong>Resumen de pérdida L12M:</strong> 3,065 créditos = $3,310 sin IGV ($3,906 con IGV). De estos, 693 son fantasma (nadie los abrió) y 2,372 fueron inconclusos (el usuario empezó pero no terminó la firma).
+  </div>
+</section>
+
+<!-- SLIDE 8: Real billing data -->
+<section class="slide" id="s8">
+  <div class="slide-number">08 &mdash; Facturación real</div>
   <h2>Pagos realizados a Keynua L12M</h2>
 
   <div class="kpi-row">
@@ -598,10 +668,10 @@
       <div class="kpi-value">$1.09</div>
       <div class="kpi-sub">Sin IGV ($1.29 con IGV)</div>
     </div>
-    <div class="kpi purple">
-      <div class="kpi-label">Saldo actual</div>
-      <div class="kpi-value">430.65</div>
-      <div class="kpi-sub">Transacciones disponibles</div>
+    <div class="kpi red">
+      <div class="kpi-label">% pagado desperdiciado</div>
+      <div class="kpi-value">24.7%</div>
+      <div class="kpi-sub">$3,906 de $15,806 con IGV</div>
     </div>
   </div>
 
@@ -634,59 +704,100 @@
     </div>
     <div>
       <h3>Hallazgos</h3>
-
       <div class="conclusion" style="border-left-color:var(--green)">
-        <strong>Ya compran Pack 1000</strong> en el 80% de las compras. Esto es correcto — es el pack más eficiente a $1.08/tx.
+        <strong>Ya compran Pack 1000</strong> en el 80% de las compras. Es el pack más eficiente a $1.08/tx.
       </div>
-
       <div class="conclusion" style="border-left-color:var(--red);margin-top:16px">
-        <strong>3 compras de emergencia Pack 100</strong> a $1.45/tx (Sep 2025, Feb 2026, Abr 2026). Sobrecosto de $131 con IGV vs haber comprado Pack 1000.
+        <strong>3 compras de emergencia Pack 100</strong> a $1.45/tx. Sobrecosto de $131 con IGV.
       </div>
-
       <div class="conclusion" style="border-left-color:var(--amber);margin-top:16px">
-        <strong>Abril 2026: 3 compras en un mes</strong> ($2,719.90). El pico de aprobaciones (1,964) agotó el saldo — se compró Pack 100 de emergencia + 2x Pack 1000.
+        <strong>Abril 2026: 3 compras en un mes</strong> ($2,719.90). El pico de volumen agotó el saldo.
       </div>
-
       <div class="conclusion" style="border-left-color:var(--accent);margin-top:16px">
-        <strong>Sin compra en diciembre 2025.</strong> El pack de noviembre duró 2 meses gracias a la baja estacional (462 aprobaciones en diciembre).
-      </div>
-
-      <h3 style="margin-top:24px">Frecuencia de compra</h3>
-      <div class="hbar-wrap">
-        <div class="hbar-label"><span>Promedio: 1 Pack 1000 cada 30 días</span></div>
-        <div class="hbar-track"><div class="hbar-fill" style="width:85%;background:var(--accent)"></div></div>
-      </div>
-      <div class="hbar-wrap">
-        <div class="hbar-label"><span>Pack 100 de emergencia: 1 cada 4 meses</span></div>
-        <div class="hbar-track"><div class="hbar-fill" style="width:25%;background:var(--red)"></div></div>
+        <strong>Sin compra en diciembre 2025.</strong> Baja estacional permitió que el pack de noviembre durara 2 meses.
       </div>
     </div>
   </div>
 </section>
 
-<!-- SLIDE 8: Conclusions -->
-<section class="slide" id="s8">
-  <div class="slide-number">08 &mdash; Conclusiones</div>
+<!-- SLIDE 9: Filterable detail table -->
+<section class="slide" id="s9">
+  <div class="slide-number">09 &mdash; Detalle segmentado</div>
+  <h2>Análisis por mes</h2>
+
+  <div class="filter-bar">
+    <label>Periodo:</label>
+    <select id="monthFilter">
+      <option value="all">Todos (L12M)</option>
+      <option value="2025-08">Agosto 2025</option>
+      <option value="2025-09">Septiembre 2025</option>
+      <option value="2025-10">Octubre 2025</option>
+      <option value="2025-11">Noviembre 2025</option>
+      <option value="2025-12">Diciembre 2025</option>
+      <option value="2026-01">Enero 2026</option>
+      <option value="2026-02">Febrero 2026</option>
+      <option value="2026-03">Marzo 2026</option>
+      <option value="2026-04">Abril 2026</option>
+      <option value="2026-05">Mayo 2026</option>
+      <option value="2026-06">Junio 2026</option>
+      <option value="2026-07">Julio 2026*</option>
+    </select>
+    <label style="margin-left:16px">Tipo:</label>
+    <select id="typeFilter">
+      <option value="all">Todos</option>
+      <option value="contrato">Contrato principal</option>
+      <option value="adenda">Adenda</option>
+    </select>
+  </div>
+
+  <!-- Dynamic KPIs -->
+  <div class="kpi-row" id="filterKpis" style="margin-top:16px;margin-bottom:24px">
+    <div class="kpi blue"><div class="kpi-label">Creados</div><div class="kpi-value" id="fkCreados">13,372</div></div>
+    <div class="kpi green"><div class="kpi-label">Firmados</div><div class="kpi-value" id="fkFirmados">10,307</div></div>
+    <div class="kpi red"><div class="kpi-label">Perdidos</div><div class="kpi-value" id="fkPerdidos">3,065</div></div>
+    <div class="kpi amber"><div class="kpi-label">% Perdido</div><div class="kpi-value" id="fkPct">22.9%</div></div>
+  </div>
+
+  <div class="grid-2">
+    <div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Mes</th><th>Creados</th><th>Firmados</th><th>Fantasma</th><th>Inconclusos</th><th>% Perdido</th></tr></thead>
+          <tbody id="filterTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <h3>Composición de pérdida</h3>
+      <div id="filterBars"></div>
+      <div class="conclusion" style="margin-top:24px" id="filterConclusion"></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 10: Conclusions -->
+<section class="slide" id="s10">
+  <div class="slide-number">10 &mdash; Conclusiones</div>
   <h2>Hallazgos y acciones</h2>
 
   <div class="grid-2">
     <div>
-      <div class="kpi green" style="margin-bottom:20px">
-        <div class="kpi-label">Eficiencia del sistema</div>
-        <div class="kpi-value" style="font-size:56px">96.5%</div>
-        <div class="kpi-sub">Solo 3.5% de transacciones son desperdicio</div>
+      <div class="kpi red" style="margin-bottom:20px">
+        <div class="kpi-label">Créditos perdidos L12M</div>
+        <div class="kpi-value" style="font-size:56px">3,065</div>
+        <div class="kpi-sub">22.9% &bull; $3,310 sin IGV &bull; $3,906 con IGV</div>
       </div>
 
-      <div class="conclusion" style="border-left-color:var(--green)">
-        <strong>El sistema opera correctamente.</strong> La hipótesis de que "no lo estamos usando bien" no se confirma. El desperdicio real es $384/año por re-firmas duplicadas — no es material.
+      <div class="conclusion" style="border-left-color:var(--red)">
+        <strong>693 contratos fantasma desde abril 2026.</strong> Se crean contratos en Keynua que nadie abre. Algo cambió en el sistema o proceso el 17 de abril. Si no se corrige, son ~$2,160/año adicionales.
+      </div>
+
+      <div class="conclusion" style="border-left-color:var(--amber);margin-top:16px">
+        <strong>Adendas: 48.4% se pierden.</strong> Son parte del flujo, pero la mitad nunca se firma. Validar si es necesario crear la adenda en Keynua antes de confirmar con el cliente.
       </div>
 
       <div class="conclusion" style="border-left-color:var(--accent);margin-top:16px">
-        <strong>Las adendas son parte del flujo.</strong> Son re-firmas de contratos vigentes. Su crecimiento (35 → 109/mes) es proporcional al crecimiento de la cartera activa. Deben presupuestarse como costo operativo recurrente.
-      </div>
-
-      <div class="conclusion" style="border-left-color:var(--blue);margin-top:16px">
-        <strong>Nuevos productos suman 115 tx.</strong> Los contratos de arrendamiento financiero empezaron en febrero 2026. Si el producto escala, considerar negociar tarifa por volumen.
+        <strong>La tendencia empeora.</strong> Pasó de 18% en agosto 2025 a 29% en julio 2026. Sin intervención, el desperdicio seguirá creciendo con la cartera.
       </div>
     </div>
     <div>
@@ -694,100 +805,186 @@
 
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px">
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
-          <div style="width:28px;height:28px;background:var(--green-muted);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--green);font-size:13px">1</div>
-          <div style="font-weight:600">Comprar siempre Pack 1000</div>
+          <div style="width:28px;height:28px;background:var(--red-muted);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--red);font-size:13px">1</div>
+          <div style="font-weight:600">Investigar cambio del 17 de abril</div>
         </div>
-        <div style="font-size:13px;color:var(--text-muted)">Ahorro de $239/mes vs Pack 500. Con 853 tx/mes promedio, un pack dura ~5 semanas.</div>
+        <div style="font-size:13px;color:var(--text-muted)">Antes de esa fecha: 0 contratos fantasma. Después: 170/mes. Revisar deploys, cambios de código o proceso operativo de esa semana.</div>
       </div>
 
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px">
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
           <div style="width:28px;height:28px;background:var(--amber-muted);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--amber);font-size:13px">2</div>
-          <div style="font-weight:600">Validar con Keynua el modelo de cobro</div>
+          <div style="font-weight:600">Cancelar en vez de eliminar contratos</div>
         </div>
-        <div style="font-size:13px;color:var(--text-muted)">Confirmar si se cobra por firma o por creación. Si es por creación, los reenvíos cuestan $1,513/año adicional.</div>
+        <div style="font-size:13px;color:var(--text-muted)">Keynua devuelve el crédito si se cancela. Hoy se eliminan (DELETE) y el crédito se pierde. Cambiar el endpoint en el backend.</div>
       </div>
 
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px">
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
           <div style="width:28px;height:28px;background:var(--blue-muted);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--blue);font-size:13px">3</div>
-          <div style="font-weight:600">Negociar tarifa enterprise</div>
+          <div style="font-weight:600">No crear adenda hasta confirmar con cliente</div>
         </div>
-        <div style="font-size:13px;color:var(--text-muted)">Con 10,000+ tx/año y crecimiento sostenido, hay espacio para negociar por debajo de $1.08/tx.</div>
+        <div style="font-size:13px;color:var(--text-muted)">48% de adendas se pierden. Enviar notificación al cliente primero; solo crear el contrato en Keynua cuando confirme.</div>
       </div>
 
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px">
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
-          <div style="width:28px;height:28px;background:var(--purple-muted);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--purple);font-size:13px">4</div>
-          <div style="font-weight:600">Presupuestar adendas como costo de cartera</div>
+          <div style="width:28px;height:28px;background:var(--green-muted);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--green);font-size:13px">4</div>
+          <div style="font-weight:600">Negociar tarifa enterprise</div>
         </div>
-        <div style="font-size:13px;color:var(--text-muted)">Con la cartera creciendo, proyectar 120-150 adendas/mes para H2 2026. Representan ~$130-160/mes adicionales al costo base.</div>
+        <div style="font-size:13px;color:var(--text-muted)">Con 13,000+ créditos/año consumidos, negociar por debajo de $1.08/tx o pedir que no cobren contratos sin firma.</div>
       </div>
 
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px">
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
-          <div style="width:28px;height:28px;background:var(--green-muted);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--green);font-size:13px">5</div>
-          <div style="font-weight:600">Limitar re-firmas duplicadas</div>
+          <div style="width:28px;height:28px;background:var(--purple-muted);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--purple);font-size:13px">5</div>
+          <div style="font-weight:600">Limitar reenvíos automáticos</div>
         </div>
-        <div style="font-size:13px;color:var(--text-muted)">Poner cap de 1 firma del contrato principal por solicitud. Las 356 re-firmas duplicadas no tienen keynua_error ni dni_mismatch — son reenvíos innecesarios.</div>
+        <div style="font-size:13px;color:var(--text-muted)">372 fantasma son reenvíos. Poner cap de reenvíos y reutilizar contratos no firmados en vez de crear nuevos.</div>
       </div>
     </div>
   </div>
 
   <div class="footer">
     <span>BaldeCash &bull; Julio 2026</span>
-    <span>* Julio 2026: datos parciales al 24 de julio</span>
+    <span>* Julio 2026: datos parciales al 27 de julio</span>
   </div>
 </section>
 
 </div>
 
 <script>
-// Generate main chart
-const chartData = [
-  { mes: 'Ago 25', created: 801, signed: 654, adenda: 25, refirma: 26 },
-  { mes: 'Sep 25', created: 1854, signed: 1435, adenda: 24, refirma: 53 },
-  { mes: 'Oct 25', created: 871, signed: 684, adenda: 42, refirma: 33 },
-  { mes: 'Nov 25', created: 688, signed: 539, adenda: 55, refirma: 15 },
-  { mes: 'Dic 25', created: 616, signed: 477, adenda: 31, refirma: 34 },
-  { mes: 'Ene 26', created: 590, signed: 496, adenda: 33, refirma: 24 },
-  { mes: 'Feb 26', created: 830, signed: 692, adenda: 73, refirma: 21 },
-  { mes: 'Mar 26', created: 1262, signed: 1035, adenda: 108, refirma: 27 },
-  { mes: 'Abr 26', created: 2476, signed: 1871, adenda: 137, refirma: 50 },
-  { mes: 'May 26', created: 1334, signed: 953, adenda: 168, refirma: 25 },
-  { mes: 'Jun 26', created: 1280, signed: 937, adenda: 134, refirma: 32 },
-  { mes: 'Jul 26', created: 659, signed: 474, adenda: 94, refirma: 16 }
+// === DATA ===
+const monthlyData = [
+  { mes:'2025-08', label:'Ago 25', creados:801, firmados:654, perdidos:147, fantasma:0, inconclusos:147,
+    cont_creados:771, cont_firmados:629, cont_perdidos:142, ade_creados:30, ade_firmados:25, ade_perdidos:5 },
+  { mes:'2025-09', label:'Sep 25', creados:1854, firmados:1434, perdidos:420, fantasma:0, inconclusos:420,
+    cont_creados:1818, cont_firmados:1410, cont_perdidos:408, ade_creados:36, ade_firmados:24, ade_perdidos:12 },
+  { mes:'2025-10', label:'Oct 25', creados:871, firmados:684, perdidos:187, fantasma:0, inconclusos:187,
+    cont_creados:775, cont_firmados:642, cont_perdidos:133, ade_creados:96, ade_firmados:42, ade_perdidos:54 },
+  { mes:'2025-11', label:'Nov 25', creados:688, firmados:538, perdidos:150, fantasma:0, inconclusos:150,
+    cont_creados:591, cont_firmados:483, cont_perdidos:108, ade_creados:97, ade_firmados:55, ade_perdidos:42 },
+  { mes:'2025-12', label:'Dic 25', creados:616, firmados:477, perdidos:139, fantasma:0, inconclusos:139,
+    cont_creados:514, cont_firmados:446, cont_perdidos:68, ade_creados:102, ade_firmados:31, ade_perdidos:71 },
+  { mes:'2026-01', label:'Ene 26', creados:590, firmados:494, perdidos:96, fantasma:0, inconclusos:96,
+    cont_creados:523, cont_firmados:461, cont_perdidos:62, ade_creados:67, ade_firmados:33, ade_perdidos:34 },
+  { mes:'2026-02', label:'Feb 26', creados:830, firmados:691, perdidos:139, fantasma:0, inconclusos:139,
+    cont_creados:717, cont_firmados:618, cont_perdidos:99, ade_creados:113, ade_firmados:73, ade_perdidos:40 },
+  { mes:'2026-03', label:'Mar 26', creados:1262, firmados:1034, perdidos:228, fantasma:0, inconclusos:228,
+    cont_creados:1087, cont_firmados:926, cont_perdidos:161, ade_creados:175, ade_firmados:108, ade_perdidos:67 },
+  { mes:'2026-04', label:'Abr 26', creados:2476, firmados:1870, perdidos:606, fantasma:170, inconclusos:436,
+    cont_creados:2178, cont_firmados:1733, cont_perdidos:445, ade_creados:298, ade_firmados:137, ade_perdidos:161 },
+  { mes:'2026-05', label:'May 26', creados:1334, firmados:951, perdidos:383, fantasma:222, inconclusos:161,
+    cont_creados:1002, cont_firmados:783, cont_perdidos:219, ade_creados:332, ade_firmados:168, ade_perdidos:164 },
+  { mes:'2026-06', label:'Jun 26', creados:1280, firmados:936, perdidos:344, fantasma:167, inconclusos:177,
+    cont_creados:1033, cont_firmados:802, cont_perdidos:231, ade_creados:247, ade_firmados:134, ade_perdidos:113 },
+  { mes:'2026-07', label:'Jul 26', creados:770, firmados:544, perdidos:226, fantasma:134, inconclusos:92,
+    cont_creados:600, cont_firmados:450, cont_perdidos:150, ade_creados:170, ade_firmados:94, ade_perdidos:76 }
 ];
 
-const maxVal = Math.max(...chartData.map(d => d.created));
+// === CHART (Slide 3) ===
+const maxVal = Math.max(...monthlyData.map(d => d.creados));
 const chart = document.getElementById('mainChart');
-
-chartData.forEach(d => {
+monthlyData.forEach(d => {
   const group = document.createElement('div');
   group.className = 'chart-bar-group';
-
   const bars = document.createElement('div');
   bars.className = 'chart-bars';
-
   const h = v => Math.max(2, (v / maxVal) * 220);
-
   bars.innerHTML = `
-    <div class="chart-bar created" style="height:${h(d.created)}px" title="Creados: ${d.created}"></div>
-    <div class="chart-bar signed" style="height:${h(d.signed)}px" title="Firmados: ${d.signed}"></div>
-    <div class="chart-bar adenda" style="height:${h(d.adenda)}px" title="Adendas: ${d.adenda}"></div>
-    <div class="chart-bar waste" style="height:${h(d.refirma)}px" title="Re-firmas: ${d.refirma}"></div>
+    <div class="chart-bar created" style="height:${h(d.creados)}px" title="Creados: ${d.creados}"></div>
+    <div class="chart-bar signed" style="height:${h(d.firmados)}px" title="Firmados: ${d.firmados}"></div>
+    <div class="chart-bar adenda" style="height:${h(d.ade_firmados)}px" title="Adendas: ${d.ade_firmados}"></div>
+    <div class="chart-bar waste" style="height:${h(d.perdidos)}px" title="Perdidos: ${d.perdidos}"></div>
   `;
-
   const label = document.createElement('div');
   label.className = 'chart-label';
-  label.textContent = d.mes;
-
+  label.textContent = d.label;
   group.appendChild(bars);
   group.appendChild(label);
   chart.appendChild(group);
 });
 
-// Nav active state
+// === FILTERABLE TABLE (Slide 9) ===
+function fmt(n) { return n.toLocaleString('en-US'); }
+
+function updateFilter() {
+  const mf = document.getElementById('monthFilter').value;
+  const tf = document.getElementById('typeFilter').value;
+
+  let filtered = mf === 'all' ? monthlyData : monthlyData.filter(d => d.mes === mf);
+
+  let rows = [];
+  let totC=0, totF=0, totG=0, totI=0;
+
+  filtered.forEach(d => {
+    let c, f, g, inc;
+    if (tf === 'contrato') {
+      c = d.cont_creados; f = d.cont_firmados;
+      const cp = d.cont_perdidos;
+      // fantasma split approximate: ratio from total
+      g = d.fantasma > 0 ? Math.round(d.fantasma * (d.cont_perdidos / Math.max(d.perdidos,1))) : 0;
+      inc = cp - g;
+    } else if (tf === 'adenda') {
+      c = d.ade_creados; f = d.ade_firmados;
+      const ap = d.ade_perdidos;
+      g = d.fantasma > 0 ? Math.round(d.fantasma * (d.ade_perdidos / Math.max(d.perdidos,1))) : 0;
+      inc = ap - g;
+    } else {
+      c = d.creados; f = d.firmados; g = d.fantasma; inc = d.inconclusos;
+    }
+    const p = c - f;
+    const pct = c > 0 ? ((p/c)*100).toFixed(1) + '%' : '0%';
+    const isHigh = parseFloat(pct) >= 25;
+
+    rows.push(`<tr${isHigh ? ' class="highlight-row"' : ''}><td>${d.label}</td><td>${fmt(c)}</td><td>${fmt(f)}</td><td>${fmt(g)}</td><td>${fmt(inc)}</td><td>${pct}</td></tr>`);
+    totC += c; totF += f; totG += g; totI += inc;
+  });
+
+  if (filtered.length > 1) {
+    const totP = totC - totF;
+    const totPct = totC > 0 ? ((totP/totC)*100).toFixed(1) + '%' : '0%';
+    rows.push(`<tr class="total-row"><td>Total</td><td>${fmt(totC)}</td><td>${fmt(totF)}</td><td>${fmt(totG)}</td><td>${fmt(totI)}</td><td>${totPct}</td></tr>`);
+  }
+
+  document.getElementById('filterTableBody').innerHTML = rows.join('');
+
+  // KPIs
+  const totP = totC - totF;
+  document.getElementById('fkCreados').textContent = fmt(totC);
+  document.getElementById('fkFirmados').textContent = fmt(totF);
+  document.getElementById('fkPerdidos').textContent = fmt(totP);
+  document.getElementById('fkPct').textContent = totC > 0 ? ((totP/totC)*100).toFixed(1) + '%' : '0%';
+
+  // Bars
+  const barsDiv = document.getElementById('filterBars');
+  const gPct = totP > 0 ? ((totG/totP)*100).toFixed(0) : 0;
+  const iPct = totP > 0 ? ((totI/totP)*100).toFixed(0) : 0;
+  barsDiv.innerHTML = `
+    <div class="hbar-wrap">
+      <div class="hbar-label"><span>Fantasma (nadie abrió)</span><span style="font-weight:700">${fmt(totG)} (${gPct}%)</span></div>
+      <div class="hbar-track"><div class="hbar-fill" style="width:${gPct}%;background:var(--red)"></div></div>
+    </div>
+    <div class="hbar-wrap">
+      <div class="hbar-label"><span>Inconclusos (usuario no completó)</span><span style="font-weight:700">${fmt(totI)} (${iPct}%)</span></div>
+      <div class="hbar-track"><div class="hbar-fill" style="width:${iPct}%;background:var(--amber)"></div></div>
+    </div>
+  `;
+
+  // Conclusion
+  const concDiv = document.getElementById('filterConclusion');
+  const cost = (totP * 1.08).toFixed(0);
+  const tipoLabel = tf === 'contrato' ? 'contratos principales' : tf === 'adenda' ? 'adendas' : 'contratos';
+  const periodo = mf === 'all' ? 'L12M' : filtered[0]?.label || '';
+  concDiv.innerHTML = `<strong>${periodo}:</strong> ${fmt(totP)} ${tipoLabel} perdidos de ${fmt(totC)} creados. Costo: <strong>$${cost}</strong> sin IGV. ${totG > 0 ? fmt(totG) + ' fueron fantasma (sin interacción del usuario).' : 'Sin contratos fantasma en este periodo.'}`;
+  concDiv.style.borderLeftColor = parseFloat(document.getElementById('fkPct').textContent) >= 25 ? 'var(--red)' : 'var(--accent)';
+}
+
+document.getElementById('monthFilter').addEventListener('change', updateFilter);
+document.getElementById('typeFilter').addEventListener('change', updateFilter);
+updateFilter();
+
+// === NAV ===
 const observer = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if (e.isIntersecting) {
@@ -796,7 +993,6 @@ const observer = new IntersectionObserver(entries => {
     }
   });
 }, { threshold: 0.5 });
-
 document.querySelectorAll('.slide').forEach(s => observer.observe(s));
 </script>
 
