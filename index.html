@@ -300,10 +300,11 @@
   <a href="#s7" title="Segmentación adendas"></a>
   <a href="#s8" title="Pérdida por tipo"></a>
   <a href="#s9" title="Facturación"></a>
-  <a href="#s10" title="Detalle fantasma"></a>
-  <a href="#s11" title="Inconclusos"></a>
-  <a href="#s12" title="Detalle inconclusos"></a>
-  <a href="#s13" title="Conclusiones"></a>
+  <a href="#s10" title="Fantasma resumen"></a>
+  <a href="#s11" title="Fantasma detalle"></a>
+  <a href="#s12" title="Inconclusos resumen"></a>
+  <a href="#s13" title="Inconclusos detalle"></a>
+  <a href="#s14" title="Conclusiones"></a>
 </nav>
 
 <div class="slides">
@@ -803,9 +804,69 @@
   </div>
 </section>
 
-<!-- SLIDE 9: Ghost contracts detail -->
-<section class="slide" id="s10" style="justify-content:flex-start;padding-top:48px">
-  <div class="slide-number">10 &mdash; Contratos fantasma — Detalle para reembolso</div>
+<!-- SLIDE 10: Fantasma resumen -->
+<section class="slide" id="s10">
+  <div class="slide-number">10 &mdash; Fantasma eliminables (sin interacción)</div>
+  <h2>291 fantasma verificados en Keynua</h2>
+
+  <div class="kpi-row">
+    <div class="kpi red">
+      <div class="kpi-label">Fantasma eliminables</div>
+      <div class="kpi-value">291</div>
+      <div class="kpi-sub">0 ItemUpdated, status pending_input</div>
+    </div>
+    <div class="kpi blue">
+      <div class="kpi-label">Contratos principales</div>
+      <div class="kpi-value">128</div>
+      <div class="kpi-sub">44% del total</div>
+    </div>
+    <div class="kpi purple">
+      <div class="kpi-label">Adendas</div>
+      <div class="kpi-value">163</div>
+      <div class="kpi-sub">56% del total</div>
+    </div>
+    <div class="kpi amber">
+      <div class="kpi-label">Costo recuperable</div>
+      <div class="kpi-value">$314</div>
+      <div class="kpi-sub">Sin IGV &bull; $371 con IGV</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div>
+      <h3>Por mes</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Mes</th><th>Contratos</th><th>Adendas</th><th>Total</th></tr></thead>
+          <tbody>
+            <tr class="highlight-row"><td>Abr 2026</td><td>46</td><td>33</td><td>79</td></tr>
+            <tr class="highlight-row"><td>May 2026</td><td>53</td><td>70</td><td>123</td></tr>
+            <tr class="highlight-row"><td>Jun 2026</td><td>28</td><td>19</td><td>47</td></tr>
+            <tr class="highlight-row"><td>Jul 2026</td><td>1</td><td>41</td><td>42</td></tr>
+            <tr class="total-row"><td>Total</td><td>128</td><td>163</td><td>291</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <div class="conclusion" style="border-left-color:var(--red)">
+        <strong>Nadie abrió estos contratos.</strong> Se crearon en Keynua pero el usuario nunca hizo click en el link de firma. Todos tienen status pending_input y son eliminables para recuperar el crédito.
+      </div>
+
+      <div class="conclusion" style="margin-top:16px;border-left-color:var(--amber)">
+        <strong>Solo existen desde abril 2026.</strong> Antes de esa fecha, todos los contratos creados recibían al menos interacción del usuario. Algo cambió en el sistema o proceso ese mes.
+      </div>
+
+      <div class="conclusion" style="margin-top:16px">
+        <strong>Julio 2026: 41 de 42 son adendas.</strong> Las adendas de cobranzas se crean masivamente sin que el cliente las abra.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 11: Ghost contracts detail -->
+<section class="slide" id="s11" style="justify-content:flex-start;padding-top:48px">
+  <div class="slide-number">11 &mdash; Fantasma — Detalle para reembolso</div>
   <h2 style="margin-bottom:20px">291 fantasma eliminables</h2>
 
   <div class="filter-bar">
@@ -843,9 +904,9 @@
   </div>
 </section>
 
-<!-- SLIDE 11: Inconclusos 2 ItemUpdated - Resumen -->
-<section class="slide" id="s11">
-  <div class="slide-number">11 &mdash; Contratos inconclusos (2 ItemUpdated)</div>
+<!-- SLIDE 12: Inconclusos 2 ItemUpdated - Resumen -->
+<section class="slide" id="s12">
+  <div class="slide-number">12 &mdash; Inconclusos eliminables (2 ItemUpdated)</div>
   <h2>218 inconclusos eliminables</h2>
 
   <div class="kpi-row">
@@ -904,9 +965,9 @@
   </div>
 </section>
 
-<!-- SLIDE 12: Inconclusos detail table -->
-<section class="slide" id="s12" style="justify-content:flex-start;padding-top:48px">
-  <div class="slide-number">12 &mdash; Inconclusos (2 ItemUpdated) — Detalle</div>
+<!-- SLIDE 13: Inconclusos detail table -->
+<section class="slide" id="s13" style="justify-content:flex-start;padding-top:48px">
+  <div class="slide-number">13 &mdash; Inconclusos — Detalle para reembolso</div>
   <h2 style="margin-bottom:20px">218 inconclusos eliminables</h2>
 
   <div class="filter-bar">
@@ -949,9 +1010,9 @@
   </div>
 </section>
 
-<!-- SLIDE 13: Conclusions -->
-<section class="slide" id="s13">
-  <div class="slide-number">13 &mdash; Conclusiones</div>
+<!-- SLIDE 14: Conclusions -->
+<section class="slide" id="s14">
+  <div class="slide-number">14 &mdash; Conclusiones</div>
   <h2>Hallazgos y acciones</h2>
 
   <div class="grid-2">
