@@ -304,7 +304,8 @@
   <a href="#s11" title="Fantasma detalle"></a>
   <a href="#s12" title="Inconclusos resumen"></a>
   <a href="#s13" title="Inconclusos detalle"></a>
-  <a href="#s14" title="Conclusiones"></a>
+  <a href="#s14" title="Resultado limpieza"></a>
+  <a href="#s15" title="Conclusiones"></a>
 </nav>
 
 <div class="slides">
@@ -1010,9 +1011,83 @@
   </div>
 </section>
 
-<!-- SLIDE 14: Conclusions -->
+<!-- SLIDE 14: Resultado de la limpieza -->
 <section class="slide" id="s14">
-  <div class="slide-number">14 &mdash; Conclusiones</div>
+  <div class="slide-number">14 &mdash; Resultado de la limpieza — 30 julio 2026</div>
+  <h2>366 créditos recuperados</h2>
+
+  <div class="kpi-row">
+    <div class="kpi green">
+      <div class="kpi-label">Créditos recuperados</div>
+      <div class="kpi-value">366</div>
+      <div class="kpi-sub">Reintegrados al saldo de Keynua</div>
+    </div>
+    <div class="kpi red">
+      <div class="kpi-label">Sin devolución</div>
+      <div class="kpi-value">100</div>
+      <div class="kpi-sub">Keynua los consideró iniciados</div>
+    </div>
+    <div class="kpi amber">
+      <div class="kpi-label">Saldo anterior</div>
+      <div class="kpi-value">274</div>
+      <div class="kpi-sub">Transacciones antes de limpieza</div>
+    </div>
+    <div class="kpi green">
+      <div class="kpi-label">Saldo nuevo</div>
+      <div class="kpi-value">640</div>
+      <div class="kpi-sub">274 + 366 recuperados</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div>
+      <h3>Desglose de eliminación</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Categoría</th><th>Eliminados</th><th>Devueltos</th><th>Sin devolución</th><th>Tasa</th></tr></thead>
+          <tbody>
+            <tr><td>Fantasma (0 ItemUpdated)</td><td>248</td><td>248</td><td>0</td><td>100%</td></tr>
+            <tr><td>Inconclusos (2 ItemUpdated)</td><td>218</td><td>118</td><td>100</td><td>54%</td></tr>
+            <tr class="total-row"><td>Total</td><td>466</td><td>366</td><td>100</td><td>79%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="margin-top:24px">Valor recuperado</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Concepto</th><th>Monto</th></tr></thead>
+          <tbody>
+            <tr><td>366 créditos @ $1.08</td><td>$395.28 sin IGV</td></tr>
+            <tr><td>Con IGV 18%</td><td>$466.43 con IGV</td></tr>
+            <tr class="total-row"><td>100 créditos perdidos @ $1.08</td><td>$108.00 sin IGV</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <div class="conclusion" style="border-left-color:var(--green)">
+        <strong>Fantasma = 100% de devolución.</strong> Los contratos donde el usuario nunca abrió el link (0 ItemUpdated) siempre devuelven el crédito al eliminarlos.
+      </div>
+
+      <div class="conclusion" style="margin-top:16px;border-left-color:var(--red)">
+        <strong>Inconclusos = 54% de devolución.</strong> Aunque Keynua los mostraba como pending_input, internamente consideró que 100 de 218 ya habían sido "iniciados" por el firmante. Los 2 ItemUpdated significan que hubo interacción mínima.
+      </div>
+
+      <div class="conclusion" style="margin-top:16px;border-left-color:var(--accent)">
+        <strong>Aprendizaje:</strong> para futuras limpiezas, enfocarse en los fantasma (0 ItemUpdated) que garantizan 100% de devolución. Los inconclusos solo devuelven ~54%.
+      </div>
+
+      <div class="conclusion" style="margin-top:16px;border-left-color:var(--amber)">
+        <strong>Julio 2026 pendiente:</strong> quedan 43 contratos de julio que no se tocaron. Cuando cierre el mes, evaluar si eliminarlos.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 15: Conclusions -->
+<section class="slide" id="s15">
+  <div class="slide-number">15 &mdash; Conclusiones</div>
   <h2>Hallazgos y acciones</h2>
 
   <div class="grid-2">
