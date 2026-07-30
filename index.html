@@ -296,11 +296,12 @@
   <a href="#s3" title="Tendencia"></a>
   <a href="#s4" title="Composición"></a>
   <a href="#s5" title="Adendas"></a>
-  <a href="#s6" title="Créditos perdidos"></a>
-  <a href="#s7" title="Ineficiencias"></a>
-  <a href="#s8" title="Facturación"></a>
-  <a href="#s9" title="Detalle mensual"></a>
-  <a href="#s10" title="Conclusiones"></a>
+  <a href="#s6" title="Contratos fantasma"></a>
+  <a href="#s7" title="Segmentación adendas"></a>
+  <a href="#s8" title="Pérdida por tipo"></a>
+  <a href="#s9" title="Facturación"></a>
+  <a href="#s10" title="Detalle reembolso"></a>
+  <a href="#s11" title="Conclusiones"></a>
 </nav>
 
 <div class="slides">
@@ -582,9 +583,93 @@
   </div>
 </section>
 
-<!-- SLIDE 7: Waste breakdown -->
+<!-- SLIDE 7: Segmentación adendas fantasma -->
 <section class="slide" id="s7">
-  <div class="slide-number">07 &mdash; Pérdida por tipo de contrato</div>
+  <div class="slide-number">07 &mdash; Segmentación de adendas fantasma</div>
+  <h2>321 adendas perdidas: cobranzas vs comercial</h2>
+
+  <div class="kpi-row">
+    <div class="kpi amber">
+      <div class="kpi-label">Adendas cobranzas</div>
+      <div class="kpi-value">297</div>
+      <div class="kpi-sub">92% de adendas fantasma</div>
+    </div>
+    <div class="kpi blue">
+      <div class="kpi-label">Adendas comercial</div>
+      <div class="kpi-value">24</div>
+      <div class="kpi-sub">8% de adendas fantasma</div>
+    </div>
+    <div class="kpi red">
+      <div class="kpi-label">Costo adendas fantasma</div>
+      <div class="kpi-value">$347</div>
+      <div class="kpi-sub">321 x $1.08 sin IGV</div>
+    </div>
+    <div class="kpi green">
+      <div class="kpi-label">Contratos fantasma</div>
+      <div class="kpi-value">370</div>
+      <div class="kpi-sub">$400 sin IGV</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div>
+      <h3>Cobranzas (297) — Días de atraso al crear adenda</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Rango DPD</th><th>Cantidad</th><th>%</th></tr></thead>
+          <tbody>
+            <tr><td>Sin atraso (0 días)</td><td>16</td><td>5%</td></tr>
+            <tr><td>1–30 días</td><td>281</td><td>95%</td></tr>
+            <tr><td>31–60 días</td><td>0</td><td>0%</td></tr>
+            <tr><td>61–90 días</td><td>0</td><td>0%</td></tr>
+            <tr><td>91–120 días</td><td>0</td><td>0%</td></tr>
+            <tr><td>121+ días</td><td>0</td><td>0%</td></tr>
+            <tr class="total-row"><td>Total</td><td>297</td><td>100%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="conclusion" style="margin-top:16px;border-left-color:var(--amber)">
+        El <strong>95% son mora temprana (1-30 días)</strong>. Las adendas de cobranzas se crean en batch al inicio del atraso y la mayoría nunca se firma.
+      </div>
+    </div>
+    <div>
+      <h3>Top gestores con adendas fantasma</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Gestor</th><th>Adendas fantasma</th><th>%</th></tr></thead>
+          <tbody>
+            <tr><td>Rita Palacios</td><td>101</td><td>34%</td></tr>
+            <tr><td>Yosmar Cadenas</td><td>59</td><td>20%</td></tr>
+            <tr><td>Lidymar Dellan</td><td>44</td><td>15%</td></tr>
+            <tr><td>Janet Lira</td><td>40</td><td>13%</td></tr>
+            <tr><td>Jahayra Mendoza</td><td>37</td><td>12%</td></tr>
+            <tr><td>Yadira Yovera</td><td>15</td><td>5%</td></tr>
+            <tr><td>Luz Rojas</td><td>1</td><td>0%</td></tr>
+            <tr class="total-row"><td>Total cobranzas</td><td>297</td><td>100%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="margin-top:24px">Comercial / Otros (24)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Rango DPD</th><th>Cantidad</th></tr></thead>
+          <tbody>
+            <tr><td>Sin atraso</td><td>8</td></tr>
+            <tr><td>1–30 días</td><td>6</td></tr>
+            <tr><td>Sin data</td><td>10</td></tr>
+            <tr class="total-row"><td>Total</td><td>24</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 8: Waste breakdown -->
+<section class="slide" id="s8">
+  <div class="slide-number">08 &mdash; Pérdida por tipo de contrato</div>
   <h2>Tasa de pérdida por tipo</h2>
 
   <div class="grid-2">
@@ -638,8 +723,8 @@
 </section>
 
 <!-- SLIDE 8: Real billing data -->
-<section class="slide" id="s8">
-  <div class="slide-number">08 &mdash; Facturación real</div>
+<section class="slide" id="s9">
+  <div class="slide-number">09 &mdash; Facturación real</div>
   <h2>Pagos realizados a Keynua L12M</h2>
 
   <div class="kpi-row">
@@ -711,8 +796,8 @@
 </section>
 
 <!-- SLIDE 9: Ghost contracts detail -->
-<section class="slide" id="s9" style="justify-content:flex-start;padding-top:48px">
-  <div class="slide-number">09 &mdash; Contratos fantasma — Detalle para reembolso</div>
+<section class="slide" id="s10" style="justify-content:flex-start;padding-top:48px">
+  <div class="slide-number">10 &mdash; Contratos fantasma — Detalle para reembolso</div>
   <h2 style="margin-bottom:20px">691 créditos a reclamar</h2>
 
   <div class="filter-bar">
@@ -750,8 +835,8 @@
 </section>
 
 <!-- SLIDE 10: Conclusions -->
-<section class="slide" id="s10">
-  <div class="slide-number">10 &mdash; Conclusiones</div>
+<section class="slide" id="s11">
+  <div class="slide-number">11 &mdash; Conclusiones</div>
   <h2>Hallazgos y acciones</h2>
 
   <div class="grid-2">
